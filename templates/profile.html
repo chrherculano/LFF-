@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Profile - LFF</title>
+</head>
+<body>
+    <div class="container">
+        <h2>My Profile</h2>
+        <form method="post" enctype="multipart/form-data" action="/profile">
+            <input type="email" name="email" placeholder="Email" value="{{ user_email }}" required>
+            <input type="password" name="password" placeholder="New Password">
+            <input type="text" name="name" placeholder="Name" value="{{ user_name }}" required>
+            <input type="date" name="birthday" placeholder="Birthday" value="{{ user_birthday }}" disabled>
+            <input type="file" name="picture" accept="image/*">
+            <button type="submit">Update Profile</button>
+        </form>
+        <form method="get" action="/main">
+            <button type="submit">Back to Main</button>
+        </form>
+        <img src="{{ url_for('user_picture', user_id=session['user_id']) }}" alt="Profile Picture">
+    </div>
+</body>
+</html>
