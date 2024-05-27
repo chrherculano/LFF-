@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from database import init_db
 from models import User
 from utils import login_required
-import io
+import sqlite3
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -80,6 +80,17 @@ def user_picture(user_id):
         return send_file(picture_path, mimetype='image/png')
     else:
         return send_file('static/defaultpfp.png', mimetype='image/png')
+
+@app.route('/sensores')
+@login_required
+def sensores():
+    db_path = 'C:\\Users\\chrda\\Documents\\facu\\incendioteste\\lff_login_system\\lff_login_system.db'
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM sensores")
+    sensores = cursor.fetchall()
+    conn.close()
+    return render_template('sensores.html', sensores=sensores)
 
 if __name__ == '__main__':
     app.run(debug=True)
