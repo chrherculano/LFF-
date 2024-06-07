@@ -65,3 +65,47 @@ class User:
         self.name = name
         self.birthday = birthday
         self.picture = picture
+
+class Sensor:
+    @staticmethod
+    def get_sensors_by_user(user_id):
+        conn = sqlite3.connect('lff_login_system.db')
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM sensores WHERE usuario_id = ?', (user_id,))
+        sensors = cursor.fetchall()
+        conn.close()
+        return sensors
+
+    @staticmethod
+    def update_status(sensor_id, status):
+        conn = sqlite3.connect('lff_login_system.db')
+        cursor = conn.cursor()
+        cursor.execute('UPDATE sensores SET status = ? WHERE id = ?', (status, sensor_id))
+        conn.commit()
+        conn.close()
+
+    @staticmethod
+    def add_sensor(nome, user_id):
+        conn = sqlite3.connect('lff_login_system.db')
+        cursor = conn.cursor()
+        cursor.execute('INSERT INTO sensores (nome, usuario_id, status) VALUES (?, ?, ?)', 
+                       (nome, user_id, 'inactive'))
+        conn.commit()
+        conn.close()
+
+    @staticmethod
+    def delete_sensor(sensor_id):
+        conn = sqlite3.connect('lff_login_system.db')
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM sensores WHERE id = ?', (sensor_id,))
+        conn.commit()
+        conn.close()
+
+    @staticmethod
+    def get_sensor_data(sensor_id):
+        conn = sqlite3.connect('lff_login_system.db')
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM historico_fumaca WHERE sensor_id = ?', (sensor_id,))
+        data = cursor.fetchall()
+        conn.close()
+        return data

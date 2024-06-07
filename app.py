@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file
+from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file, jsonify
 from database import init_db
-from models import User
+from models import User, Sensor
 from utils import login_required
 import sqlite3
 
@@ -47,7 +47,9 @@ def register():
 @login_required
 def main():
     user_picture = session.get('user_picture', 'static/defaultpfp.png')
-    return render_template('main.html', user_email=session['user_email'], user_name=session['user_name'], user_picture=user_picture)
+    user_id = session['user_id']
+    sensores = Sensor.get_sensors_by_user(user_id)
+    return render_template('main.html', user_email=session['user_email'], user_name=session['user_name'], user_picture=user_picture, sensores=sensores)
 
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
@@ -81,16 +83,34 @@ def user_picture(user_id):
     else:
         return send_file('static/defaultpfp.png', mimetype='image/png')
 
-@app.route('/sensores')
+@app.route('/update_sensor', methods=['POST'])
 @login_required
-def sensores():
-    db_path = 'C:\\Users\\chrda\\Documents\\facu\\incendioteste\\lff_login_system\\lff_login_system.db'
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM sensores")
-    sensores = cursor.fetchall()
-    conn.close()
-    return render_template('sensores.html', sensores=sensores)
+def update_sensor():
+    sensor_id = request.form['sensor_id']
+    status = request.form['status']
+    Sensor.update_status(sensor_id, status)
+    return "Status updated", 200
+
+@app.route('/add_sensor', methods=['POST'])
+@login_required
+def add_sensor():
+    nome = request.form['nome']
+    user_id = session['user_id']
+    Sensor.add_sensor(nome, user_id)
+    return redirect(url_for('main'))
+
+@app.route('/delete_sensor', methods=['POST'])
+@login_required
+def delete_sensor():
+    sensor_id = request.form['sensor_id']
+    Sensor.delete_sensor(sensor_id)
+    return redirect(url_for('main'))
+
+@app.route('/get_sensor_data/<int:sensor_id>')
+@login_required
+def get_sensor_data(sensor_id):
+    data = Sensor.get_sensor_data(sensor_id)
+    return jsonify(data)
 
 if __name__ == '__main__':
     app.run(debug=True)

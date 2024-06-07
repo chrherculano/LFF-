@@ -15,7 +15,6 @@ def init_db():
     )
     ''')
 
-    # Criar tabela de sensores
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS sensores (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -26,7 +25,6 @@ def init_db():
     )
     ''')
 
-    # Criar tabela de histórico de detecção de fumaça
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS historico_fumaca (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

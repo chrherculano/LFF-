@@ -31,9 +31,9 @@
             </tr>
             {% for sensor in sensores %}
             <tr>
-                <td>{{ sensor['nome'] }}</td>
-                <td>{{ sensor['status'] }}</td>
-                <td><a href="/historico/{{ sensor['id'] }}">Ver Histórico</a></td>
+                <td>{{ sensor[1] }}</td>
+                <td>{{ sensor[2] }}</td>
+                <td><a href="#">Ver Histórico</a></td>
             </tr>
             {% endfor %}
         </table>
